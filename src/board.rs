@@ -1,9 +1,5 @@
-use std::collections::HashMap;
-
-const START: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-
 #[derive(Debug)]
-enum Peice {
+pub enum Peice {
     Pawn,
     Knight,
     Bishop,
@@ -14,61 +10,76 @@ enum Peice {
 }
 
 #[derive(Debug)]
-enum Color {
+pub enum Color {
     White,
     Black,
     Empty,
 }
 
 pub struct Square {
-    peice: Peice,
-    color: Color,
-    position: u8,
+    pub peice: Peice,
+    pub color: Color,
 }
 
 impl Square {
-    pub fn new(peice: Peice, color: Color, position: u8) -> Square {
-        Square { peice, position, color }
+    pub fn new(peice: Peice, color: Color) -> Square {
+        Square { peice, color }
     }
 }
 
 pub struct Board {
-    board: Vec<Square>
+    pub board: Vec<Square>
 }
 
 
 impl Board {
     pub fn new(fen: &str) -> Board {
         let mut board: Vec<Square> = Vec::new();
+
         // Generate Empty Board
-        for position in 0..64 {
-            println!("{}", position);
-            board.push(
+        for _ in 0..64 {
+        board.push(
                 Square {
                     peice: Peice::Empty,
                     color: Color::Empty,
-                    position: position
                 }
             )
         }
-
-        let mut peice_map = HashMap::new();
-        peice_map.insert("k", Peice::King);
-        peice_map.insert("q", Peice::Queen);
-        peice_map.insert("r", Peice::Rook);
-        peice_map.insert("n", Peice::Knight);
-        peice_map.insert("b", Peice::Bishop);
-        peice_map.insert("p", Peice::Pawn);
 
         let mut file = 0;
         let mut rank = 7;
 
         // Populate via fen string 
         for c in fen.chars() {
+            if c == '/' {
+                rank -= 1;
+                file = 0;
+            }
+            else if c == ' ' {
+                break;
+            }
+            else {
+                if c.is_ascii_digit() {
+                    file += c.to_digit(10).unwrap();
+                }
+                else {
+                    let color = if c.is_uppercase() { Color::White } else { Color::Black };
+                    let peice = match c.to_ascii_lowercase() {
+                        'k' => Peice::King,
+                        'q' => Peice::Queen,
+                        'r' => Peice::Rook,
+                        'n' => Peice::Knight,
+                        'b' => Peice::Bishop,
+                        'p' => Peice::Pawn,
+                        _ => panic!("yeah idk what happened")
+                    };
+
+                    board[(rank * 8 + file) as usize] = Square { color, peice };
+                    file += 1;
+                }
+            }
         }
 
         Board { board: board }
     }
-
-    fn 
 }
