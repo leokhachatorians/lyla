@@ -28,17 +28,17 @@ impl Square {
 }
 
 pub struct Board {
-    pub board: Vec<Square>
+    pub elements: Vec<Square>
 }
 
 
 impl Board {
-    pub fn new(fen: &str) -> Board {
-        let mut board: Vec<Square> = Vec::new();
+    pub fn generate_empty_board() -> Board {
+        let mut elements: Vec<Square> = Vec::new();
 
         // Generate Empty Board
         for _ in 0..64 {
-        board.push(
+        elements.push(
                 Square {
                     peice: Peice::Empty,
                     color: Color::Empty,
@@ -46,8 +46,13 @@ impl Board {
             )
         }
 
+        Board { elements }
+    }
+
+    pub fn new(fen: &str) -> Board {
         let mut file = 0;
         let mut rank = 7;
+        let mut board = Board::generate_empty_board();
 
         // Populate via fen string 
         for c in fen.chars() {
@@ -74,12 +79,12 @@ impl Board {
                         _ => panic!("yeah idk what happened")
                     };
 
-                    board[(rank * 8 + file) as usize] = Square { color, peice };
+                    board.elements[(rank * 8 + file) as usize] = Square { color, peice };
                     file += 1;
                 }
             }
         }
 
-        Board { board: board }
+        board
     }
 }

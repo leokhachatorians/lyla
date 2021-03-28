@@ -6,8 +6,8 @@ const START: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 
 fn main() {
-    let empty_board: Board = Board::new(START);
-    for square in empty_board.board {
+    let board: Board = Board::new(START);
+    for square in board.elements {
         println!("Peice: {:?}\nColor: {:?}\n",
             square.peice, square.color,
         );
