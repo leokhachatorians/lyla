@@ -41,16 +41,16 @@ impl fmt::Display for Square {
 }
 
 pub struct Board {
-    pub elements: Vec<Square>
+    pub squares: Vec<Square>
 }
 
 
 impl Board {
     pub fn generate_empty_board() -> Board {
-        let mut elements: Vec<Square> = Vec::new();
+        let mut squares: Vec<Square> = Vec::new();
 
         for _ in 0..64 {
-        elements.push(
+        squares.push(
                 Square {
                     peice: Peice::Empty,
                     color: Color::Empty,
@@ -58,7 +58,7 @@ impl Board {
             )
         }
 
-        Board { elements }
+        Board { squares }
     }
 
     pub fn new(fen: &str) -> Board {
@@ -91,7 +91,7 @@ impl Board {
                         _ => panic!("yeah idk what happened")
                     };
 
-                    board.elements[(rank * 8 + file) as usize] = Square { color, peice };
+                    board.squares[(rank * 8 + file) as usize] = Square { color, peice };
                     file += 1;
                 }
             }
@@ -112,46 +112,46 @@ mod tests {
 
         // Check that White owns these peices
         for index in 0..16 {
-            assert_eq!(board.elements[index].color, Color::White);
+            assert_eq!(board.squares[index].color, Color::White);
         }
 
         // Check White has proper peices
-        assert_eq!(board.elements[0].peice, Peice::Rook);
-        assert_eq!(board.elements[1].peice, Peice::Knight);
-        assert_eq!(board.elements[2].peice, Peice::Bishop);
-        assert_eq!(board.elements[3].peice, Peice::Queen);
-        assert_eq!(board.elements[4].peice, Peice::King);
-        assert_eq!(board.elements[5].peice, Peice::Bishop);
-        assert_eq!(board.elements[6].peice, Peice::Knight);
-        assert_eq!(board.elements[7].peice, Peice::Rook);
+        assert_eq!(board.squares[0].peice, Peice::Rook);
+        assert_eq!(board.squares[1].peice, Peice::Knight);
+        assert_eq!(board.squares[2].peice, Peice::Bishop);
+        assert_eq!(board.squares[3].peice, Peice::Queen);
+        assert_eq!(board.squares[4].peice, Peice::King);
+        assert_eq!(board.squares[5].peice, Peice::Bishop);
+        assert_eq!(board.squares[6].peice, Peice::Knight);
+        assert_eq!(board.squares[7].peice, Peice::Rook);
 
         for index in 8..16 {
-            assert_eq!(board.elements[index].peice, Peice::Pawn);
+            assert_eq!(board.squares[index].peice, Peice::Pawn);
         }
 
         // Check that these squares are empty
         for index in 16..48 {
-            assert_eq!(board.elements[index].peice, Peice::Empty);
-            assert_eq!(board.elements[index].color, Color::Empty);
+            assert_eq!(board.squares[index].peice, Peice::Empty);
+            assert_eq!(board.squares[index].color, Color::Empty);
         }
 
         // Check that Black owns these peices
         for index in 48..64 {
-            assert_eq!(board.elements[index].color, Color::Black);
+            assert_eq!(board.squares[index].color, Color::Black);
         }
 
         // Check Black as proper peices
         for index in 48..56 {
-            assert_eq!(board.elements[index].peice, Peice::Pawn);
+            assert_eq!(board.squares[index].peice, Peice::Pawn);
         }
 
-        assert_eq!(board.elements[56].peice, Peice::Rook);
-        assert_eq!(board.elements[57].peice, Peice::Knight);
-        assert_eq!(board.elements[58].peice, Peice::Bishop);
-        assert_eq!(board.elements[59].peice, Peice::Queen);
-        assert_eq!(board.elements[60].peice, Peice::King);
-        assert_eq!(board.elements[61].peice, Peice::Bishop);
-        assert_eq!(board.elements[62].peice, Peice::Knight);
-        assert_eq!(board.elements[63].peice, Peice::Rook);
+        assert_eq!(board.squares[56].peice, Peice::Rook);
+        assert_eq!(board.squares[57].peice, Peice::Knight);
+        assert_eq!(board.squares[58].peice, Peice::Bishop);
+        assert_eq!(board.squares[59].peice, Peice::Queen);
+        assert_eq!(board.squares[60].peice, Peice::King);
+        assert_eq!(board.squares[61].peice, Peice::Bishop);
+        assert_eq!(board.squares[62].peice, Peice::Knight);
+        assert_eq!(board.squares[63].peice, Peice::Rook);
     }
 }
