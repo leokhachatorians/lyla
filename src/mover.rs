@@ -1,12 +1,11 @@
 use crate::board::Square;
-use crate::constants::MAILBOX;
+use crate::constants::{
+    MAILBOX, MAILBOX64,
+    CAN_SLIDE, DIRECTION_TOTALS, MOVE_DIRECTIONS,
+};
 
-enum Moves {
-    Up
-}
 
-pub fn check(square: &Square, to: i32) -> bool {
-    let from = square.mailbox_num;
+pub fn check(from: i32, to: i32) -> bool {
     let check = (from + to) as usize;
 
     println!("{} {}", from, check);
@@ -18,10 +17,15 @@ pub fn check(square: &Square, to: i32) -> bool {
 mod tests {
     use super::*;
 
-
     #[test]
     fn check_cant_move_out_of_bounds() {
-        let square = Square::new(61);
-        assert_eq!(check(&square, -1), false);
+        // 61 is square A4
+        assert_eq!(check(61, -1), false);
+    }
+
+    #[test]
+    fn check_move_in_bounds() {
+        // 61 is square A4
+        assert_eq!(check(61, 1), true);
     }
 }
