@@ -1,18 +1,16 @@
-//use std::cmp::PartialEq;
 use std::fmt;
 
-
-pub const DEFAULT: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+use crate::constants::DEFAULT_FEN;
 
 
 #[derive(Debug, PartialEq)]
 pub enum Peice {
-    Pawn,
     Knight,
     Bishop,
     Rook,
-    King,
     Queen,
+    King,
+    Pawn,
     Empty,
 }
 
@@ -26,22 +24,25 @@ pub enum Color {
 pub struct Square {
     pub peice: Peice,
     pub color: Color,
-    pub valid: bool,
+    pub mailbox_num: i32,
+    //pub valid: bool,
 }
 
 impl Square {
-    pub fn new(valid: bool) -> Square {
+    pub fn new(mailbox_num: i32) -> Square {
         Square {
             peice: Peice::Empty,
             color: Color::Empty,
-            valid: valid
+            mailbox_num
+            //valid: valid
         }
     }
 }
 
 impl fmt::Display for Square {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "({:?}, {:?}, {:?})", self.peice, self.color, self.valid)
+        write!(f, "({:?}, {:?})", self.peice, self.color)
+        //write!(f, "({:?}, {:?}, {:?})", self.peice, self.color, self.valid)
     }
 }
 
@@ -49,21 +50,21 @@ pub struct Board {
     pub squares: Vec<Square>
 }
 
-
 impl Board {
     pub fn generate_empty_board() -> Board {
         let mut squares: Vec<Square> = Vec::new();
-        let invalid_indices = vec!(
-            29, 30, 39, 40, 49, 50, 59, 60, 69, 70,
-            79, 80, 89, 90
-        );
+        let mut mailbox_num = 21;
+        let mut running_count = 0;
 
-        for i in 0..120 {
-            if 20 < i && i < 99 && ! invalid_indices.contains(&i) {
-                squares.push(Square::new(true))
-            }
-            else {
-                squares.push(Square::new(false))
+        for _ in 0..64 {
+            running_count += 1;
+            squares.push(Square::new(mailbox_num));
+
+            if running_count == 8 {
+                mailbox_num += 3;
+                running_count = 0;
+            } else {
+                mailbox_num += 1;
             }
         }
 
@@ -71,17 +72,15 @@ impl Board {
     }
 
     pub fn new(fen: &str) -> Board {
-        // Top of the 10x12
-
-        let mut file = 1; // offset by 1
-        let mut rank = 9; // offset by 2
+        let mut file = 0;
+        let mut rank = 7;
         let mut board = Board::generate_empty_board();
 
         // Populate via fen string 
         for c in fen.chars() {
             if c == '/' {
                 rank -= 1;
-                file = 1;
+                file = 0;
             }
             else if c == ' ' {
                 break;
@@ -102,10 +101,8 @@ impl Board {
                         _ => panic!("yeah idk what happened")
                     };
 
-
-                    board.squares[(rank * 10 + file) as usize] = Square {
-                        color, peice, valid: true
-                    };
+                    board.squares[(rank * 8 + file) as usize].peice = peice;
+                    board.squares[(rank * 8 + file) as usize].color = color;
                     file += 1;
                 }
             }
@@ -120,110 +117,111 @@ impl Board {
 mod tests {
     use super::*;
 
+
     #[test]
     fn check_default_white_peices() {
-        let board = Board::new(DEFAULT);
+        let board = Board::new(DEFAULT_FEN);
 
         // Back rank
-        for index in 21..28 {
+        for index in 0..7 {
             assert_eq!(board.squares[index].color, Color::White);
-            assert_eq!(board.squares[index].valid, true);
+            //assert_eq!(board.squares[index].valid, true);
         }
-        assert_eq!(board.squares[21].peice, Peice::Rook);
-        assert_eq!(board.squares[22].peice, Peice::Knight);
-        assert_eq!(board.squares[23].peice, Peice::Bishop);
-        assert_eq!(board.squares[24].peice, Peice::Queen);
-        assert_eq!(board.squares[25].peice, Peice::King);
-        assert_eq!(board.squares[26].peice, Peice::Bishop);
-        assert_eq!(board.squares[27].peice, Peice::Knight);
-        assert_eq!(board.squares[28].peice, Peice::Rook);
+        assert_eq!(board.squares[0].peice, Peice::Rook);
+        assert_eq!(board.squares[1].peice, Peice::Knight);
+        assert_eq!(board.squares[2].peice, Peice::Bishop);
+        assert_eq!(board.squares[3].peice, Peice::Queen);
+        assert_eq!(board.squares[4].peice, Peice::King);
+        assert_eq!(board.squares[5].peice, Peice::Bishop);
+        assert_eq!(board.squares[6].peice, Peice::Knight);
+        assert_eq!(board.squares[7].peice, Peice::Rook);
 
         // Pawns
-        for index in 31..38 {
+        for index in 8..15 {
             assert_eq!(board.squares[index].color, Color::White);
             assert_eq!(board.squares[index].peice, Peice::Pawn);
-            assert_eq!(board.squares[index].valid, true);
+            //assert_eq!(board.squares[index].valid, true);
         }
     }
 
     #[test]
     fn check_default_black_peices() {
-        let board = Board::new(DEFAULT);
+        let board = Board::new(DEFAULT_FEN);
 
         // Back rank
-        for index in 91..98 {
+        for index in 48..64 {
             assert_eq!(board.squares[index].color, Color::Black);
-            assert_eq!(board.squares[index].valid, true);
+            //assert_eq!(board.squares[index].valid, true);
         }
-        assert_eq!(board.squares[91].peice, Peice::Rook);
-        assert_eq!(board.squares[92].peice, Peice::Knight);
-        assert_eq!(board.squares[93].peice, Peice::Bishop);
-        assert_eq!(board.squares[94].peice, Peice::Queen);
-        assert_eq!(board.squares[95].peice, Peice::King);
-        assert_eq!(board.squares[96].peice, Peice::Bishop);
-        assert_eq!(board.squares[97].peice, Peice::Knight);
-        assert_eq!(board.squares[98].peice, Peice::Rook);
+        assert_eq!(board.squares[56].peice, Peice::Rook);
+        assert_eq!(board.squares[57].peice, Peice::Knight);
+        assert_eq!(board.squares[58].peice, Peice::Bishop);
+        assert_eq!(board.squares[59].peice, Peice::Queen);
+        assert_eq!(board.squares[60].peice, Peice::King);
+        assert_eq!(board.squares[61].peice, Peice::Bishop);
+        assert_eq!(board.squares[62].peice, Peice::Knight);
+        assert_eq!(board.squares[63].peice, Peice::Rook);
 
         // Pawns
-        for index in 81..88 {
+        for index in 48..56 {
             assert_eq!(board.squares[index].color, Color::Black);
             assert_eq!(board.squares[index].peice, Peice::Pawn);
-            assert_eq!(board.squares[index].valid, true);
+            //assert_eq!(board.squares[index].valid, true);
         }
     }
 
     #[test]
     fn check_default_empty_spots() {
-        let board = Board::new(DEFAULT);
+        let board = Board::new(DEFAULT_FEN);
 
-        for index in 41..48 {
+        for index in 16..48 {
             assert_eq!(board.squares[index].peice, Peice::Empty);
             assert_eq!(board.squares[index].color, Color::Empty);
-            assert_eq!(board.squares[index].valid, true);
+            //assert_eq!(board.squares[index].valid, true);
         }
-        for index in 51..58 {
-            assert_eq!(board.squares[index].peice, Peice::Empty);
-            assert_eq!(board.squares[index].color, Color::Empty);
-            assert_eq!(board.squares[index].valid, true);
-        }
-        for index in 61..68 {
-            assert_eq!(board.squares[index].peice, Peice::Empty);
-            assert_eq!(board.squares[index].color, Color::Empty);
-            assert_eq!(board.squares[index].valid, true);
-        }
-        for index in 71..78 {
-            assert_eq!(board.squares[index].peice, Peice::Empty);
-            assert_eq!(board.squares[index].color, Color::Empty);
-            assert_eq!(board.squares[index].valid, true);
-        }
+        //for index in 51..58 {
+        //    assert_eq!(board.squares[index].peice, Peice::Empty);
+        //    assert_eq!(board.squares[index].color, Color::Empty);
+        //    //assert_eq!(board.squares[index].valid, true);
+        //}
+        //for index in 61..68 {
+        //    assert_eq!(board.squares[index].peice, Peice::Empty);
+        //    assert_eq!(board.squares[index].color, Color::Empty);
+        //    //assert_eq!(board.squares[index].valid, true);
+        //}
+        //for index in 71..78 {
+        //    assert_eq!(board.squares[index].peice, Peice::Empty);
+        //    assert_eq!(board.squares[index].color, Color::Empty);
+        //    //assert_eq!(board.squares[index].valid, true);
+        //}
     }
 
-    #[test]
-    fn check_invalid_positions() {
-        let board = Board::new(DEFAULT);
-
-        for index in 0..21 {
-            assert_eq!(board.squares[index].peice, Peice::Empty);
-            assert_eq!(board.squares[index].color, Color::Empty);
-            assert_eq!(board.squares[index].valid, false);
-        }
-
-        for index in 99..120 {
-            assert_eq!(board.squares[index].peice, Peice::Empty);
-            assert_eq!(board.squares[index].color, Color::Empty);
-            assert_eq!(board.squares[index].valid, false);
-        }
-
-        let indices = vec!(
-            29, 30, 39, 40, 49, 50, 59, 60, 69, 70,
-            79, 80, 89, 90
-        );
-
-        for index in indices {
-            assert_eq!(board.squares[index].peice, Peice::Empty);
-            assert_eq!(board.squares[index].color, Color::Empty);
-            assert_eq!(board.squares[index].valid, false);
-        }
-
-    }
+//    #[test]
+//    fn check_invalid_positions() {
+//        let board = Board::new(DEFAULT_FEN);
+//
+//        for index in 0..21 {
+//            assert_eq!(board.squares[index].peice, Peice::Empty);
+//            assert_eq!(board.squares[index].color, Color::Empty);
+//            assert_eq!(board.squares[index].valid, false);
+//        }
+//
+//        for index in 99..120 {
+//            assert_eq!(board.squares[index].peice, Peice::Empty);
+//            assert_eq!(board.squares[index].color, Color::Empty);
+//            assert_eq!(board.squares[index].valid, false);
+//        }
+//
+//        let indices = vec!(
+//            29, 30, 39, 40, 49, 50, 59, 60, 69, 70,
+//            79, 80, 89, 90
+//        );
+//
+//        for index in indices {
+//            assert_eq!(board.squares[index].peice, Peice::Empty);
+//            assert_eq!(board.squares[index].color, Color::Empty);
+//            assert_eq!(board.squares[index].valid, false);
+//        }
+//
+//    }
 }
