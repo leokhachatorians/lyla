@@ -5,12 +5,12 @@ use crate::constants::DEFAULT_FEN;
 
 #[derive(Debug, PartialEq)]
 pub enum Peice {
-    Pawn,
     Knight,
     Bishop,
     Rook,
-    King,
     Queen,
+    King,
+    Pawn,
     Empty,
 }
 
@@ -101,13 +101,8 @@ impl Board {
                         _ => panic!("yeah idk what happened")
                     };
 
-
                     board.squares[(rank * 8 + file) as usize].peice = peice;
                     board.squares[(rank * 8 + file) as usize].color = color;
-                   // = Square {
-                   //     color, peice
-                   //     //color, peice, valid: true
-                   // };
                     file += 1;
                 }
             }
