@@ -49,33 +49,18 @@ mod tests {
     }
 
     #[test]
-    fn knight_valid_move() {
+    fn check_valid_direction() {
         assert_eq!(valid_direction(Peice::Knight, -21), true);
     }
 
     #[test]
-    fn knight_invalid_move() {
-        assert_eq!(valid_direction(Peice::Knight, -1), false);
+    fn check_invalid_direction() {
+        assert_eq!(valid_direction(Peice::Knight, -99), false);
     }
 
     #[test]
-    fn bishop_valid_move() {
-        assert_eq!(valid_direction(Peice::Bishop, -11), true);
-    }
-
-    #[test]
-    fn bishop_invalid_move() {
-        assert_eq!(valid_direction(Peice::Bishop, 0), false);
-    }
-
-    #[test]
-    fn rook_valid_move() {
-        assert_eq!(valid_direction(Peice::Rook, -10), true);
-    }
-
-    #[test]
-    fn rook_invalid_move() {
-        assert_eq!(valid_direction(Peice::Rook, 21), false);
+    fn check_zero_diretion() {
+        assert_eq!(valid_direction(Peice::Knight, 0), false);
     }
 
 }
