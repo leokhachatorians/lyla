@@ -12,7 +12,7 @@ pub fn check(from: i32, to: i32, peice: Peice) -> bool {
         false => return false,
     };
 
-    check = match valid_peice_move(peice, to) {
+    check = match valid_direction(peice, to) {
         true => true,
         false => return false,
     };
@@ -25,11 +25,10 @@ fn out_of_bounds(from: i32, to: i32) -> bool {
     MAILBOX[result] > 0
 }
 
-fn valid_peice_move(peice: Peice, direction: i32) -> bool {
+fn valid_direction(peice: Peice, direction: i32) -> bool {
     if direction == 0 { return false };
     let directions = MOVE_DIRECTIONS[peice as usize];
-    let check = directions.iter().any(|v| v == &direction);
-    check
+    directions.contains(&direction)
 }
 
 
@@ -51,32 +50,32 @@ mod tests {
 
     #[test]
     fn knight_valid_move() {
-        assert_eq!(valid_peice_move(Peice::Knight, -21), true);
+        assert_eq!(valid_direction(Peice::Knight, -21), true);
     }
 
     #[test]
     fn knight_invalid_move() {
-        assert_eq!(valid_peice_move(Peice::Knight, -1), false);
+        assert_eq!(valid_direction(Peice::Knight, -1), false);
     }
 
     #[test]
     fn bishop_valid_move() {
-        assert_eq!(valid_peice_move(Peice::Bishop, -11), true);
+        assert_eq!(valid_direction(Peice::Bishop, -11), true);
     }
 
     #[test]
     fn bishop_invalid_move() {
-        assert_eq!(valid_peice_move(Peice::Bishop, 0), false);
+        assert_eq!(valid_direction(Peice::Bishop, 0), false);
     }
 
     #[test]
     fn rook_valid_move() {
-        assert_eq!(valid_peice_move(Peice::Rook, -10), true);
+        assert_eq!(valid_direction(Peice::Rook, -10), true);
     }
 
     #[test]
     fn rook_invalid_move() {
-        assert_eq!(valid_peice_move(Peice::Rook, 21), false);
+        assert_eq!(valid_direction(Peice::Rook, 21), false);
     }
 
 }
