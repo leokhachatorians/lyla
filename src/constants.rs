@@ -56,3 +56,8 @@ pub const MOVE_DIRECTIONS: [[i32;8]; 6] = [
     [-11, -10, -9, -1, 1, 9, 10, 11],       // King
     [0, 0, 0, 0, 0, 0, 0, 0],               // Pawn
 ];
+
+// The offsets when sliding in a particular direction
+pub const SLIDE_OFFSETS: [i32; 8] = [
+ -11, -10, -9, -1, 1, 9, 10, 11
+];
