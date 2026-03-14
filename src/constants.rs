@@ -27,7 +27,7 @@ pub const MAILBOX64: [i32; 64] = [
 ];
 
 
-// Can this peice slide?
+// Can this piece slide?
 pub const CAN_SLIDE: [bool; 6] = [
     false, // Knight
     true,  // Bishop
@@ -37,7 +37,7 @@ pub const CAN_SLIDE: [bool; 6] = [
     false, // Pawn
 ];
 
-// How many directions a peice can move in
+// How many directions a piece can move in
 pub const DIRECTION_TOTALS: [i32; 6] = [
     8, // Knight
     4, // Bishop
@@ -47,7 +47,7 @@ pub const DIRECTION_TOTALS: [i32; 6] = [
     0,  // Pawn
 ];
 
-// The direction a peice can move
+// The direction a piece can move
 pub const MOVE_DIRECTIONS: [[i32;8]; 6] = [
     [-21, -19, -12, -8, 8, 12, 19, 21],     // Knight
     [-11, -9, 9, 11, 0, 0, 0, 0],           // Bishop
@@ -56,3 +56,13 @@ pub const MOVE_DIRECTIONS: [[i32;8]; 6] = [
     [-11, -10, -9, -1, 1, 9, 10, 11],       // King
     [0, 0, 0, 0, 0, 0, 0, 0],               // Pawn
 ];
+
+
+// Test FENS
+#[allow(dead_code)]
+pub const KNIGHT_ON_E4_EMPTY_BOARD: &str = "8/8/8/8/4N3/8/8/8 w - - 0 1";
+pub const KNIGHT_ON_A1_EMPTY_BOARD: &str = "8/8/8/8/8/8/8/N7 w - - 0 1";
+pub const BISHOP_ON_A1_EMPTY_BOARD: &str = "8/8/8/8/8/8/8/B7 w - - 0 1";
+pub const ROOK_ON_D4_EMPTY_BOARD: &str = "8/8/8/8/3R4/8/8/8 w - - 0 1";
+pub const ROOK_ON_D4_PAWN_ON_D6_BLOCK: &str = "8/8/3P4/8/3R4/8/8/8 w - - 0 1";
+pub const ROOK_ON_D4_PAWN_ON_D6_CAPTURE: &str = "8/8/3p4/8/3R4/8/8/8 w - - 0 1";
